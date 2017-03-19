@@ -208,21 +208,21 @@ TARGETS: $(TARGETS)
 
 .PHONY: qemu qemu-nox debug debug-nox
 qemu-mon: $(UCOREIMG)
-	$(V)$(QEMU)  -no-reboot -monitor stdio -hda $< -serial null
+	$(V)$(QEMU)  -no-reboot -monitor stdio -hda $< -serial null -curses
 qemu: $(UCOREIMG)
-	$(V)$(QEMU) -no-reboot -parallel stdio -hda $< -serial null
+	$(V)$(QEMU) -no-reboot -parallel stdio -hda $< -serial null -curses
 log: $(UCOREIMG)
-	$(V)$(QEMU) -no-reboot -d int,cpu_reset  -D q.log -parallel stdio -hda $< -serial null
+	$(V)$(QEMU) -curses -no-reboot -d int,cpu_reset  -D q.log -parallel stdio -hda $< -serial null
 qemu-nox: $(UCOREIMG)
-	$(V)$(QEMU)   -no-reboot -serial mon:stdio -hda $< -nographic
+	$(V)$(QEMU)  -curses  -no-reboot -serial mon:stdio -hda $< -nographic
 TERMINAL        :=gnome-terminal
 debug: $(UCOREIMG)
-	$(V)$(QEMU) -S -s -parallel stdio -hda $< -serial null &
+	$(V)$(QEMU) -curses -S -s -parallel stdio -hda $< -serial null &
 	$(V)sleep 2
 	$(V)$(TERMINAL) -e "gdb -q -tui -x tools/gdbinit"
 	
 debug-nox: $(UCOREIMG)
-	$(V)$(QEMU) -S -s -serial mon:stdio -hda $< -nographic &
+	$(V)$(QEMU) -curses -S -s -serial mon:stdio -hda $< -nographic &
 	$(V)sleep 2
 	$(V)$(TERMINAL) -e "gdb -q -x tools/gdbinit"
 
