@@ -429,13 +429,13 @@ page_remove_pte(pde_t *pgdir, uintptr_t la, pte_t *ptep) {
                                   //(6) flush tlb
     // }
     if ((*ptep & PTE_P) == 1) { // (1) if pte is present
-        struct Page* page = pte2page(*ptep); // (2) find page
-        set_page_ref(page, page->ref - 1); // (3)
-        if (page->ref == 0) { // (4)
+        struct Page* page = pte2page(*ptep); // (2) find corresponding page to pte
+        set_page_ref(page, page->ref - 1); // (3)decrease page reference
+        if (page->ref == 0) { // (4)and free this page when page reference reachs 0
             free_page(page);
         }
-        *ptep = 0; // (5)
-        tlb_invalidate(pgdir, la); // (6)
+        *ptep = 0; // (5)clear second page table entry
+        tlb_invalidate(pgdir, la); // (6)flush tlb
     }
 #endif
 }
