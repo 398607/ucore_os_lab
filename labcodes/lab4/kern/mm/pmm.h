@@ -143,6 +143,5 @@ page_ref_dec(struct Page *page) {
 }
 
 extern char bootstack[], bootstacktop[];
-
 #endif /* !__KERN_MM_PMM_H__ */
 

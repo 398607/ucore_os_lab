@@ -230,9 +230,9 @@ QEMUOPTS = -hda $(UCOREIMG) -drive file=$(SWAPIMG),media=disk,cache=writeback
 
 .PHONY: qemu qemu-nox debug debug-nox
 qemu-mon: $(UCOREIMG) $(SWAPIMG)
-	$(V)$(QEMU)  -no-reboot -monitor stdio $(QEMUOPTS) -serial null
+	$(V)$(QEMU)  -no-reboot -monitor stdio $(QEMUOPTS) -serial null -nographic
 qemu: $(UCOREIMG) $(SWAPIMG)
-	$(V)$(QEMU)  -no-reboot -parallel stdio $(QEMUOPTS) -serial null
+	$(V)$(QEMU)  -no-reboot -parallel stdio $(QEMUOPTS) -serial null -nographic
 
 qemu-nox: $(UCOREIMG) $(SWAPIMG)
 	$(V)$(QEMU)  -no-reboot -serial mon:stdio $(QEMUOPTS) -nographic
