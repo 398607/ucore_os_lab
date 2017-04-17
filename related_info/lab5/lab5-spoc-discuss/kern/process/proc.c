@@ -117,6 +117,7 @@ alloc_proc(void) {
         memset(proc->name, 0, PROC_NAME_LEN);
         proc->wait_state = 0;
         proc->cptr = proc->optr = proc->yptr = NULL;
+        cprintf("proc pid = %d, name = %s, state = PROC_UNINIT\n", proc->pid, proc->name);
     }
     return proc;
 }
@@ -466,6 +467,8 @@ do_exit(int error_code) {
     }
     current->state = PROC_ZOMBIE;
     current->exit_code = error_code;
+
+    cprintf("proc pid = %d, name = %s, state: PROC_RUNNABLE -> PROC_ZOMBIE\n", current->pid, current->name);
     
     bool intr_flag;
     struct proc_struct *proc;
@@ -726,6 +729,7 @@ repeat:
         }
     }
     if (haskid) {
+        cprintf("proc pid = %d, name = %s, state: PROC_RUNNABLE -> PROC_SLEEPING\n", current->pid, current->name);
         current->state = PROC_SLEEPING;
         current->wait_state = WT_CHILD;
         schedule();
@@ -740,6 +744,7 @@ found:
     if (proc == idleproc || proc == initproc) {
         panic("wait idleproc or initproc.\n");
     }
+    cprintf("proc pid = %d, name = %s, state: PROC_ZOMBIE -> exit\n", proc->pid, proc->name);
     if (code_store != NULL) {
         *code_store = proc->exit_code;
     }
@@ -825,6 +830,11 @@ init_main(void *arg) {
         panic("create user_main failed.\n");
     }
 
+    int mypid = kernel_thread(user_main, NULL, 0);
+    if (mypid <= 0) {
+        panic("create my user_main kernel thread failed.\n");
+    }
+
     while (do_wait(0, NULL) == 0) {
         schedule();
     }
@@ -885,4 +895,3 @@ cpu_idle(void) {
         }
     }
 }
-

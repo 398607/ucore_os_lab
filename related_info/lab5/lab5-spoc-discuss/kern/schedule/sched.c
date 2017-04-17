@@ -11,7 +11,13 @@ wakeup_proc(struct proc_struct *proc) {
     local_intr_save(intr_flag);
     {
         if (proc->state != PROC_RUNNABLE) {
+            char *pre_state;
+            if (proc->state == PROC_SLEEPING)
+                pre_state = "PROC_SLEEPING";
+            else
+                pre_state = "PROC_UNINIT";
             proc->state = PROC_RUNNABLE;
+            cprintf("proc pid = %d, name = %s, state: %s -> PROC_RUNNABLE\n", current->pid, current->name, pre_state);
             proc->wait_state = 0;
         }
         else {
@@ -49,4 +55,3 @@ schedule(void) {
     }
     local_intr_restore(intr_flag);
 }
-
